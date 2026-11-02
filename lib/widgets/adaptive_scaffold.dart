@@ -21,6 +21,15 @@ class AdaptiveScaffold extends StatelessWidget {
       case 1:
         context.go('/authors');
         break;
+      case 2:
+        context.go('/genres');
+        break;
+      case 3:
+        context.go('/publishers');
+        break;
+      case 4:
+        context.go('/readers');
+        break;
     }
   }
 
@@ -37,6 +46,9 @@ class AdaptiveScaffold extends StatelessWidget {
           destinations: const [
             NavigationDestination(icon: Icon(Icons.menu_book), label: 'Книги'),
             NavigationDestination(icon: Icon(Icons.people), label: 'Авторы'),
+            NavigationDestination(icon: Icon(Icons.category), label: 'Жанры'),
+            NavigationDestination(icon: Icon(Icons.business), label: 'Издательства'),
+            NavigationDestination(icon: Icon(Icons.badge), label: 'Читатели'),
           ],
         ),
       );
@@ -64,6 +76,18 @@ class AdaptiveScaffold extends StatelessWidget {
               NavigationRailDestination(
                 icon: Icon(Icons.people),
                 label: Text('Авторы'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.category),
+                label: Text('Жанры'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.business),
+                label: Text('Издательства'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.badge),
+                label: Text('Читатели'),
               ),
             ],
           ),

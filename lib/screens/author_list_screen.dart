@@ -112,6 +112,12 @@ class _AuthorListScreenState extends State<AuthorListScreen> {
               onPressed: notifier.clearSelection,
             ),
           ],
+          FilledButton.icon(
+            icon: const Icon(Icons.person_add),
+            label: const Text('Новый автор'),
+            onPressed: () => context.go('/authors/new'),
+          ),
+          const SizedBox(width: 12),
         ],
       ),
       body: Column(

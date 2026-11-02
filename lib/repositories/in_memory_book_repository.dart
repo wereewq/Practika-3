@@ -9,10 +9,12 @@ class InMemoryBookRepository implements BookRepository {
   int _nextId = seedBooks.length + 1;
 
   @override
-  Future<PageResult<Book>> find(BookQuery q) async {
+  Future<List<Book>> findAll() async {
+    return _books.where((b) => !b.isDeleted).toList();
+  }
 
-    //throw Exception('Сетевой сбой: сервер временно недоступен (HTTP 500)');
-    
+  @override
+  Future<PageResult<Book>> find(BookQuery q) async {
     await Future.delayed(const Duration(milliseconds: 250));
 
     var rows = _books.where((b) => q.includeDeleted || !b.isDeleted).toList();
@@ -114,7 +116,6 @@ class InMemoryBookRepository implements BookRepository {
   Future<int> deleteMany(List<int> ids) async {
     var count = 0;
     for (final id in ids) {
-      // Исправлено: обращение к !b.isDeleted вместо ошибочного !b[i].isDeleted
       final i = _books.indexWhere((b) => b.id == id && !b.isDeleted);
       if (i != -1) {
         _books[i] = _books[i].copyWith(deletedAt: DateTime.now());

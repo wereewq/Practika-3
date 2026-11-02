@@ -9,6 +9,11 @@ class InMemoryAuthorRepository implements AuthorRepository {
   int _nextId = seedAuthors.length + 1;
 
   @override
+  Future<List<Author>> findAll() async {
+    return _authors.where((a) => !a.isDeleted).toList();
+  }
+
+  @override
   Future<PageResult<Author>> find(AuthorQuery q) async {
     await Future.delayed(const Duration(milliseconds: 250));
 

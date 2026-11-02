@@ -1,5 +1,24 @@
 import '../models/author.dart';
 import '../models/book.dart';
+import '../models/genre.dart';
+import '../models/library_card.dart';
+import '../models/publisher.dart';
+import '../models/reader.dart';
+
+final List<Publisher> seedPublishers = [
+  const Publisher(id: 1, name: 'Азбука', city: 'Санкт-Петербург', website: 'https://azbooka.ru'),
+  const Publisher(id: 2, name: 'АСТ', city: 'Москва', website: 'https://ast.ru'),
+  const Publisher(id: 3, name: 'Эксмо', city: 'Москва', website: 'https://eksmo.ru'),
+  const Publisher(id: 4, name: 'МИФ', city: 'Москва', website: 'https://mann-ivanov-ferber.ru'),
+];
+
+final List<Genre> seedGenres = [
+  const Genre(id: 1, name: 'Роман / Проза', description: 'Художественная сюжетная литература'),
+  const Genre(id: 2, name: 'Детектив', description: 'Произведения о расследовании тайн и преступлений'),
+  const Genre(id: 3, name: 'Антиутопия и Фантастика', description: 'Научная фантастика и модели будущего'),
+  const Genre(id: 4, name: 'Философская притча', description: 'Иносказательные поучительные произведения'),
+  const Genre(id: 5, name: 'Историческая драма', description: 'Сюжеты на фоне масштабных исторических событий'),
+];
 
 final List<Author> seedAuthors = [
   const Author(id: 1, firstName: 'Лев', lastName: 'Толстой', country: 'Россия', birthYear: 1828),
@@ -15,25 +34,76 @@ final List<Author> seedAuthors = [
 ];
 
 final List<Book> seedBooks = [
-  const Book(id: 1, title: 'Война и мир. Том 1', isbn: '978-5-389-06256-6', year: 1869, pages: 480, publisherId: 1, authorIds: [1], genreIds: [1], copiesTotal: 5, copiesAvailable: 3),
-  const Book(id: 2, title: 'Война и мир. Том 2', isbn: '978-5-389-06257-3', year: 1869, pages: 448, publisherId: 1, authorIds: [1], genreIds: [1], copiesTotal: 4, copiesAvailable: 2),
+  const Book(id: 1, title: 'Война и мир. Том 1', isbn: '978-5-389-06256-6', year: 1869, pages: 480, publisherId: 1, authorIds: [1], genreIds: [1, 5], copiesTotal: 5, copiesAvailable: 3),
+  const Book(id: 2, title: 'Война и мир. Том 2', isbn: '978-5-389-06257-3', year: 1869, pages: 448, publisherId: 1, authorIds: [1], genreIds: [1, 5], copiesTotal: 4, copiesAvailable: 2),
   const Book(id: 3, title: 'Анна Каренина', isbn: '978-5-17-090658-1', year: 1877, pages: 864, publisherId: 2, authorIds: [1], genreIds: [1], copiesTotal: 3, copiesAvailable: 1),
   const Book(id: 4, title: 'Преступление и наказание', isbn: '978-5-389-04924-6', year: 1866, pages: 608, publisherId: 1, authorIds: [2], genreIds: [1, 2], copiesTotal: 7, copiesAvailable: 4),
-  const Book(id: 5, title: 'Братья Карамазовы', isbn: '978-5-17-084534-7', year: 1880, pages: 840, publisherId: 2, authorIds: [2], genreIds: [1], copiesTotal: 6, copiesAvailable: 5),
+  const Book(id: 5, title: 'Братья Карамазовы', isbn: '978-5-17-084534-7', year: 1880, pages: 840, publisherId: 2, authorIds: [2], genreIds: [1, 4], copiesTotal: 6, copiesAvailable: 5),
   const Book(id: 6, title: 'Идиот', isbn: '978-5-389-07521-4', year: 1869, pages: 640, publisherId: 1, authorIds: [2], genreIds: [1], copiesTotal: 5, copiesAvailable: 0),
   const Book(id: 7, title: '1984', isbn: '978-5-17-080115-2', year: 1949, pages: 320, publisherId: 2, authorIds: [3], genreIds: [3], copiesTotal: 10, copiesAvailable: 8),
-  const Book(id: 8, title: 'Скотный двор', isbn: '978-5-17-090334-4', year: 1945, pages: 128, publisherId: 2, authorIds: [3], genreIds: [3], copiesTotal: 8, copiesAvailable: 6),
+  const Book(id: 8, title: 'Скотный двор', isbn: '978-5-17-090334-4', year: 1945, pages: 128, publisherId: 2, authorIds: [3], genreIds: [3, 4], copiesTotal: 8, copiesAvailable: 6),
   const Book(id: 9, title: 'Процесс', isbn: '978-5-389-05510-0', year: 1925, pages: 288, publisherId: 1, authorIds: [4], genreIds: [1, 4], copiesTotal: 4, copiesAvailable: 2),
   const Book(id: 10, title: 'Замок', isbn: '978-5-17-094121-6', year: 1926, pages: 352, publisherId: 2, authorIds: [4], genreIds: [1, 4], copiesTotal: 3, copiesAvailable: 3),
   const Book(id: 11, title: 'Сто лет одиночества', isbn: '978-5-17-085077-8', year: 1967, pages: 480, publisherId: 2, authorIds: [5], genreIds: [1, 4], copiesTotal: 6, copiesAvailable: 2),
   const Book(id: 12, title: 'Любовь во время чумы', isbn: '978-5-17-088190-1', year: 1985, pages: 544, publisherId: 2, authorIds: [5], genreIds: [1], copiesTotal: 4, copiesAvailable: 4),
   const Book(id: 13, title: 'Убить пересмешника', isbn: '978-5-17-084042-7', year: 1960, pages: 416, publisherId: 2, authorIds: [6], genreIds: [1], copiesTotal: 5, copiesAvailable: 1),
   const Book(id: 14, title: 'Мастер и Маргарита', isbn: '978-5-389-01686-6', year: 1967, pages: 448, publisherId: 1, authorIds: [7], genreIds: [1, 4], copiesTotal: 12, copiesAvailable: 7),
-  const Book(id: 15, title: 'Белая гвардия', isbn: '978-5-17-092556-8', year: 1925, pages: 384, publisherId: 2, authorIds: [7], genreIds: [1], copiesTotal: 3, copiesAvailable: 2),
+  const Book(id: 15, title: 'Белая гвардия', isbn: '978-5-17-092556-8', year: 1925, pages: 384, publisherId: 2, authorIds: [7], genreIds: [1, 5], copiesTotal: 3, copiesAvailable: 2),
   const Book(id: 16, title: 'Собачье сердце', isbn: '978-5-389-07441-5', year: 1925, pages: 192, publisherId: 1, authorIds: [7], genreIds: [1, 3], copiesTotal: 9, copiesAvailable: 5),
   const Book(id: 17, title: 'Три товарища', isbn: '978-5-17-087342-5', year: 1936, pages: 480, publisherId: 2, authorIds: [8], genreIds: [1], copiesTotal: 6, copiesAvailable: 3),
-  const Book(id: 18, title: 'На Западном фронте без перемен', isbn: '978-5-17-086542-0', year: 1929, pages: 288, publisherId: 2, authorIds: [8], genreIds: [1], copiesTotal: 5, copiesAvailable: 4),
+  const Book(id: 18, title: 'На Западном фронте без перемен', isbn: '978-5-17-086542-0', year: 1929, pages: 288, publisherId: 2, authorIds: [8], genreIds: [1, 5], copiesTotal: 5, copiesAvailable: 4),
   const Book(id: 19, title: '451 градус по Фаренгейту', isbn: '978-5-17-087289-3', year: 1953, pages: 256, publisherId: 2, authorIds: [9], genreIds: [3], copiesTotal: 11, copiesAvailable: 9),
   const Book(id: 20, title: 'Марсианские хроники', isbn: '978-5-17-089456-7', year: 1950, pages: 320, publisherId: 2, authorIds: [9], genreIds: [3], copiesTotal: 4, copiesAvailable: 1),
   const Book(id: 21, title: 'Маленький принц', isbn: '978-5-699-90001-5', year: 1943, pages: 112, publisherId: 3, authorIds: [10], genreIds: [4], copiesTotal: 15, copiesAvailable: 12),
+];
+
+final List<Reader> seedReaders = [
+  Reader(
+    id: 1,
+    fullName: 'Иван Иванов',
+    email: 'ivanov@example.com',
+    phone: '+79991112233',
+    card: LibraryCard(
+      cardNumber: 'CARD-1001',
+      issuedAt: DateTime(2026, 1, 15),
+      expiresAt: DateTime(2027, 1, 15),
+      isActive: true,
+    ),
+  ),
+  Reader(
+    id: 2,
+    fullName: 'Анна Смирнова',
+    email: 'smirnova@example.com',
+    phone: '+79992223344',
+    card: LibraryCard(
+      cardNumber: 'CARD-1002',
+      issuedAt: DateTime(2026, 2, 10),
+      expiresAt: DateTime(2027, 2, 10),
+      isActive: true,
+    ),
+  ),
+  Reader(
+    id: 3,
+    fullName: 'Максим Петров',
+    email: 'petrov@example.com',
+    phone: '+79993334455',
+    card: LibraryCard(
+      cardNumber: 'CARD-1003',
+      issuedAt: DateTime(2025, 11, 1),
+      expiresAt: DateTime(2026, 11, 1),
+      isActive: true,
+    ),
+  ),
+  Reader(
+    id: 4,
+    fullName: 'Елена Кузнецова',
+    email: 'kuznetsova@example.com',
+    phone: '+79994445566',
+    card: LibraryCard(
+      cardNumber: 'CARD-1004',
+      issuedAt: DateTime(2026, 3, 20),
+      expiresAt: DateTime(2027, 3, 20),
+      isActive: false,
+    ),
+  ),
 ];

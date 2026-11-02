@@ -111,6 +111,12 @@ class _BookListScreenState extends State<BookListScreen> {
               onPressed: notifier.clearSelection,
             ),
           ],
+          FilledButton.icon(
+            icon: const Icon(Icons.add),
+            label: const Text('Новая книга'),
+            onPressed: () => context.go('/books/new'),
+          ),
+          const SizedBox(width: 12),
         ],
       ),
       body: Column(
@@ -404,6 +410,11 @@ class _BookListScreenState extends State<BookListScreen> {
           tooltip: 'Стереть навсегда',
           icon: const Icon(Icons.delete_forever, color: Colors.red),
           onPressed: () => _confirmHardDelete(context, notifier, b),
+        ),
+        IconButton(
+          tooltip: 'Редактировать',
+          icon: const Icon(Icons.edit),
+          onPressed: () => context.go('/books/${b.id}/edit'),
         ),
       ] else
         IconButton(

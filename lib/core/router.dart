@@ -1,10 +1,25 @@
 import 'package:go_router/go_router.dart';
+
 import '../models/author_query.dart';
 import '../models/book_query.dart';
+import '../models/genre_query.dart';
+import '../models/publisher_query.dart';
+import '../models/reader_query.dart';
 import '../screens/author_detail_screen.dart';
+import '../screens/author_form_screen.dart';
 import '../screens/author_list_screen.dart';
 import '../screens/book_detail_screen.dart';
+import '../screens/book_form_screen.dart';
 import '../screens/book_list_screen.dart';
+import '../screens/genre_detail_screen.dart';
+import '../screens/genre_form_screen.dart';
+import '../screens/genre_list_screen.dart';
+import '../screens/publisher_detail_screen.dart';
+import '../screens/publisher_form_screen.dart';
+import '../screens/publisher_list_screen.dart';
+import '../screens/reader_detail_screen.dart';
+import '../screens/reader_form_screen.dart';
+import '../screens/reader_list_screen.dart';
 import '../widgets/adaptive_scaffold.dart';
 
 BookQuery parseBookQuery(Map<String, String> params) {
@@ -75,42 +90,147 @@ final appRouter = GoRouter(
     ShellRoute(
       builder: (context, state, child) {
         final loc = state.uri.path;
-        final currentIndex = loc.startsWith('/authors') ? 1 : 0;
+        int idx = 0;
+        if (loc.startsWith('/authors')) idx = 1;
+        if (loc.startsWith('/genres')) idx = 2;
+        if (loc.startsWith('/publishers')) idx = 3;
+        if (loc.startsWith('/readers')) idx = 4;
+
         return AdaptiveScaffold(
-          currentIndex: currentIndex,
+          currentIndex: idx,
           child: child,
         );
       },
       routes: [
+        // Книги
         GoRoute(
           path: '/books',
-          builder: (context, state) {
-            final query = parseBookQuery(state.uri.queryParameters);
-            return BookListScreen(initialQuery: query);
-          },
+          builder: (context, state) =>
+              BookListScreen(initialQuery: parseBookQuery(state.uri.queryParameters)),
           routes: [
             GoRoute(
+              path: 'new',
+              builder: (context, state) => const BookFormScreen(),
+            ),
+            GoRoute(
               path: ':id',
-              builder: (context, state) {
-                final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
-                return BookDetailScreen(bookId: id);
-              },
+              builder: (context, state) => BookDetailScreen(
+                bookId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => BookFormScreen(
+                    id: int.tryParse(state.pathParameters['id'] ?? ''),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
+
+        // Авторы
         GoRoute(
           path: '/authors',
-          builder: (context, state) {
-            final query = parseAuthorQuery(state.uri.queryParameters);
-            return AuthorListScreen(initialQuery: query);
-          },
+          builder: (context, state) =>
+              AuthorListScreen(initialQuery: parseAuthorQuery(state.uri.queryParameters)),
           routes: [
             GoRoute(
+              path: 'new',
+              builder: (context, state) => const AuthorFormScreen(),
+            ),
+            GoRoute(
               path: ':id',
-              builder: (context, state) {
-                final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
-                return AuthorDetailScreen(authorId: id);
-              },
+              builder: (context, state) => AuthorDetailScreen(
+                authorId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => AuthorFormScreen(
+                    id: int.tryParse(state.pathParameters['id'] ?? ''),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+
+        // Жанры
+        GoRoute(
+          path: '/genres',
+          builder: (context, state) => const GenreListScreen(initialQuery: GenreQuery()),
+          routes: [
+            GoRoute(
+              path: 'new',
+              builder: (context, state) => const GenreFormScreen(),
+            ),
+            GoRoute(
+              path: ':id',
+              builder: (context, state) => GenreDetailScreen(
+                genreId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => GenreFormScreen(
+                    id: int.tryParse(state.pathParameters['id'] ?? ''),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+
+        // Издательства
+        GoRoute(
+          path: '/publishers',
+          builder: (context, state) =>
+              const PublisherListScreen(initialQuery: PublisherQuery()),
+          routes: [
+            GoRoute(
+              path: 'new',
+              builder: (context, state) => const PublisherFormScreen(),
+            ),
+            GoRoute(
+              path: ':id',
+              builder: (context, state) => PublisherDetailScreen(
+                publisherId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => PublisherFormScreen(
+                    id: int.tryParse(state.pathParameters['id'] ?? ''),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+
+        // Читатели
+        GoRoute(
+          path: '/readers',
+          builder: (context, state) => const ReaderListScreen(initialQuery: ReaderQuery()),
+          routes: [
+            GoRoute(
+              path: 'new',
+              builder: (context, state) => const ReaderFormScreen(),
+            ),
+            GoRoute(
+              path: ':id',
+              builder: (context, state) => ReaderDetailScreen(
+                readerId: int.tryParse(state.pathParameters['id'] ?? '') ?? 0,
+              ),
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => ReaderFormScreen(
+                    id: int.tryParse(state.pathParameters['id'] ?? ''),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
