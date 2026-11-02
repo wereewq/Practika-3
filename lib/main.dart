@@ -1,17 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/api_client.dart';
 import 'core/router.dart';
+import 'repositories/api_author_repository.dart';
+import 'repositories/api_book_repository.dart';
+import 'repositories/api_genre_repository.dart';
+import 'repositories/api_publisher_repository.dart';
+import 'repositories/api_reader_repository.dart';
 import 'repositories/author_repository.dart';
 import 'repositories/book_repository.dart';
 import 'repositories/genre_repository.dart';
-import 'repositories/persistent_author_repository.dart';
-import 'repositories/persistent_book_repository.dart';
-import 'repositories/persistent_genre_repository.dart';
-import 'repositories/persistent_publisher_repository.dart';
-import 'repositories/persistent_reader_repository.dart';
 import 'repositories/publisher_repository.dart';
 import 'repositories/reader_repository.dart';
 import 'state/author_list_notifier.dart';
@@ -20,48 +21,58 @@ import 'state/genre_list_notifier.dart';
 import 'state/publisher_list_notifier.dart';
 import 'state/reader_list_notifier.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   usePathUrlStrategy();
-  final prefs = await SharedPreferences.getInstance();
-  runApp(LibraryApp(prefs: prefs));
+  runApp(const LibraryApp());
 }
 
 class LibraryApp extends StatelessWidget {
-  final SharedPreferences prefs;
+  final Dio? dio;
 
-  const LibraryApp({super.key, required this.prefs});
+  const LibraryApp({super.key, this.dio});
 
   @override
   Widget build(BuildContext context) {
-    // Инициализация постоянных репозиториев поверх localStorage
-    final bookRepo = PersistentBookRepository(prefs);
-    final authorRepo = PersistentAuthorRepository(prefs);
-    final genreRepo = PersistentGenreRepository(prefs);
-    final publisherRepo = PersistentPublisherRepository(prefs, bookRepo);
-    final readerRepo = PersistentReaderRepository(prefs);
-
     return MultiProvider(
       providers: [
-        Provider<BookRepository>.value(value: bookRepo),
-        Provider<AuthorRepository>.value(value: authorRepo),
-        Provider<GenreRepository>.value(value: genreRepo),
-        Provider<PublisherRepository>.value(value: publisherRepo),
-        Provider<ReaderRepository>.value(value: readerRepo),
-        ChangeNotifierProvider<BookListNotifier>(
-          create: (_) => BookListNotifier(bookRepo),
+        Provider<Dio>(
+          create: (_) => dio ?? buildDio(),
         ),
-        ChangeNotifierProvider<AuthorListNotifier>(
-          create: (_) => AuthorListNotifier(authorRepo),
+        ProxyProvider<Dio, BookRepository>(
+          update: (_, client, _) => ApiBookRepository(client),
         ),
-        ChangeNotifierProvider<GenreListNotifier>(
-          create: (_) => GenreListNotifier(genreRepo),
+        ProxyProvider<Dio, AuthorRepository>(
+          update: (_, client, _) => ApiAuthorRepository(client),
         ),
-        ChangeNotifierProvider<PublisherListNotifier>(
-          create: (_) => PublisherListNotifier(publisherRepo),
+        ProxyProvider<Dio, GenreRepository>(
+          update: (_, client, _) => ApiGenreRepository(client),
         ),
-        ChangeNotifierProvider<ReaderListNotifier>(
-          create: (_) => ReaderListNotifier(readerRepo),
+        ProxyProvider<Dio, PublisherRepository>(
+          update: (_, client, _) => ApiPublisherRepository(client),
+        ),
+        ProxyProvider<Dio, ReaderRepository>(
+          update: (_, client, _) => ApiReaderRepository(client),
+        ),
+        ChangeNotifierProxyProvider<BookRepository, BookListNotifier>(
+          create: (ctx) => BookListNotifier(ctx.read<BookRepository>()),
+          update: (_, repo, notifier) => notifier ?? BookListNotifier(repo),
+        ),
+        ChangeNotifierProxyProvider<AuthorRepository, AuthorListNotifier>(
+          create: (ctx) => AuthorListNotifier(ctx.read<AuthorRepository>()),
+          update: (_, repo, notifier) => notifier ?? AuthorListNotifier(repo),
+        ),
+        ChangeNotifierProxyProvider<GenreRepository, GenreListNotifier>(
+          create: (ctx) => GenreListNotifier(ctx.read<GenreRepository>()),
+          update: (_, repo, notifier) => notifier ?? GenreListNotifier(repo),
+        ),
+        ChangeNotifierProxyProvider<PublisherRepository, PublisherListNotifier>(
+          create: (ctx) => PublisherListNotifier(ctx.read<PublisherRepository>()),
+          update: (_, repo, notifier) => notifier ?? PublisherListNotifier(repo),
+        ),
+        ChangeNotifierProxyProvider<ReaderRepository, ReaderListNotifier>(
+          create: (ctx) => ReaderListNotifier(ctx.read<ReaderRepository>()),
+          update: (_, repo, notifier) => notifier ?? ReaderListNotifier(repo),
         ),
       ],
       child: MaterialApp.router(

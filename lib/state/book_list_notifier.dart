@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../core/api_exceptions.dart';
 import '../models/book.dart';
 import '../models/book_query.dart';
 import '../models/page_result.dart';
@@ -47,6 +48,8 @@ class BookListNotifier extends ChangeNotifier {
       _result = await _repository.find(_query);
       _status = LoadStatus.success;
     } catch (e) {
+      // Игнорируем отменённые запросы CancelToken, чтобы не мигать ошибкой
+      if (e is ApiException && e.message.contains('отменён')) return;
       _error = 'Не удалось загрузить книги: $e';
       _status = LoadStatus.error;
     }
@@ -55,7 +58,7 @@ class BookListNotifier extends ChangeNotifier {
 
   Future<void> applyQuery(BookQuery next) async {
     _query = next;
-    _selected.clear(); // Сброс выделения при смене фильтрации/страницы
+    _selected.clear();
     await load();
   }
 
@@ -84,7 +87,6 @@ class BookListNotifier extends ChangeNotifier {
     _safeNotify();
   }
 
-  // Мягкое удаление выбранных записей
   Future<void> deleteSelected() async {
     if (_selected.isEmpty) return;
     await _repository.deleteMany(_selected.toList());
@@ -92,27 +94,23 @@ class BookListNotifier extends ChangeNotifier {
     await load();
   }
 
-  // Одиночное мягкое удаление
   Future<void> softDelete(int id) async {
     await _repository.softDelete(id);
     _selected.remove(id);
     await load();
   }
 
-  // Физическое удаление записи
   Future<void> hardDelete(int id) async {
     await _repository.hardDelete(id);
     _selected.remove(id);
     await load();
   }
 
-  // Восстановление записи
   Future<void> restore(int id) async {
     await _repository.restore(id);
     await load();
   }
 
-  // Переключение видимости удалённых книг
   Future<void> toggleIncludeDeleted(bool value) async {
     await applyQuery(_query.copyWith(includeDeleted: value));
   }

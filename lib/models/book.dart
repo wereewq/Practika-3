@@ -69,19 +69,57 @@ class Book {
         'deletedAt': deletedAt?.toIso8601String(),
       };
 
-  factory Book.fromJson(Map<String, dynamic> json) => Book(
-        id: json['id'] as int? ?? 0,
-        title: json['title'] as String? ?? '',
-        isbn: json['isbn'] as String? ?? '',
-        year: json['year'] as int? ?? 0,
-        pages: json['pages'] as int? ?? 0,
-        publisherId: json['publisherId'] as int? ?? 0,
-        authorIds: (json['authorIds'] as List?)?.cast<int>() ?? const [],
-        genreIds: (json['genreIds'] as List?)?.cast<int>() ?? const [],
-        copiesTotal: json['copiesTotal'] as int? ?? 0,
-        copiesAvailable: json['copiesAvailable'] as int? ?? 0,
-        deletedAt: json['deletedAt'] == null
-            ? null
-            : DateTime.tryParse(json['deletedAt'] as String),
-      );
+  factory Book.fromJson(Map<String, dynamic> json) {
+    // Разбор publisherId: число или вложенный объект publisher
+    int pubId = 0;
+    if (json['publisherId'] is int) {
+      pubId = json['publisherId'] as int;
+    } else if (json['publisher'] is Map) {
+      pubId = (json['publisher'] as Map)['id'] as int? ?? 0;
+    }
+
+    // Разбор authorIds: массив чисел или массив объектов authors
+    List<int> authIds = [];
+    if (json['authorIds'] is List) {
+      authIds = (json['authorIds'] as List)
+          .map((e) => e is int ? e : ((e is Map) ? e['id'] as int? ?? 0 : 0))
+          .where((id) => id > 0)
+          .toList();
+    } else if (json['authors'] is List) {
+      authIds = (json['authors'] as List)
+          .map((e) => (e is Map) ? e['id'] as int? ?? 0 : 0)
+          .where((id) => id > 0)
+          .toList();
+    }
+
+    // Разбор genreIds: массив чисел или массив объектов genres
+    List<int> genIds = [];
+    if (json['genreIds'] is List) {
+      genIds = (json['genreIds'] as List)
+          .map((e) => e is int ? e : ((e is Map) ? e['id'] as int? ?? 0 : 0))
+          .where((id) => id > 0)
+          .toList();
+    } else if (json['genres'] is List) {
+      genIds = (json['genres'] as List)
+          .map((e) => (e is Map) ? e['id'] as int? ?? 0 : 0)
+          .where((id) => id > 0)
+          .toList();
+    }
+
+    return Book(
+      id: json['id'] as int? ?? 0,
+      title: json['title'] as String? ?? '',
+      isbn: json['isbn'] as String? ?? '',
+      year: json['year'] as int? ?? 0,
+      pages: json['pages'] as int? ?? 0,
+      publisherId: pubId,
+      authorIds: authIds,
+      genreIds: genIds,
+      copiesTotal: json['copiesTotal'] as int? ?? 0,
+      copiesAvailable: json['copiesAvailable'] as int? ?? 0,
+      deletedAt: json['deletedAt'] == null
+          ? null
+          : DateTime.tryParse(json['deletedAt'] as String),
+    );
+  }
 }

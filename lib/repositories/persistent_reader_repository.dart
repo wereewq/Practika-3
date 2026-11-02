@@ -43,7 +43,7 @@ class PersistentReaderRepository implements ReaderRepository {
     final duplicate = _readers.any((r) =>
         r.id != excludeId && r.email.trim().toLowerCase() == normalized);
     if (duplicate) {
-      throw const ValidationException({'email': 'Читатель с таким адресом почты уже зарегистрирован'});
+      throw const ValidationException('Ошибка валидации', {'email': 'Читатель с таким адресом почты уже зарегистрирован'});
     }
   }
 

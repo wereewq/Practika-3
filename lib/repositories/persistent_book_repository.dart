@@ -44,7 +44,7 @@ class PersistentBookRepository implements BookRepository {
         b.id != excludeId &&
         b.isbn.replaceAll(RegExp(r'[-\s]'), '').toLowerCase() == normalized);
     if (duplicate) {
-      throw const ValidationException({'isbn': 'Книга с таким ISBN уже существует'});
+      throw const ValidationException('Ошибка валидации', {'isbn': 'Книга с таким ISBN уже существует'});
     }
   }
 
